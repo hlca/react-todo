@@ -1,38 +1,222 @@
-$color-red: red;
-$color-yellow: yellow;
-$color-green: lightgreen;
-$color-black: black;
-$light-diameter: 150px;
-$traffic-light-width: 175px;
-$default-space: 10px;
+$default-spacing: 10px;
+$border-color: #ccc;
+$min-padding: 3px;
+$error-font-color: #740505;
+$default-radius: 5px;
+$red-color: #dd4b39;
 
-.red{
-	background-color: $color-red;
+$note-color-list: #fff, rgb(255, 138, 128), rgb(255, 209, 128), rgb(255, 255, 141), rgb(207, 216, 220), rgb(128, 216, 255), rgb(167, 255, 235), rgb(204, 255, 144);
+
+body{
+	font-family: sans-serif;
 }
 
-.yellow{
-	background-color: $color-yellow;
+textarea:focus, input:focus{
+  outline: none;
 }
 
-.green{
-	background-color: $color-green;
+@for $i from 1 through length($note-color-list) {
+  .bg-color-#{$i} {
+    background-color: nth($note-color-list, $i);
+  }
 }
 
-.light.active{
-	opacity: 1;
+.clearfix{
+	clear: both;
 }
 
-.light{
-	height:$light-diameter;
-	border-radius:100%;
-	width:$light-diameter;
-	opacity:0.5;
-	transition: 0.75s;
-	margin: $default-space auto;
+.no-visible{
+	display: none;
 }
 
-.traffic-light{
-	background-color: $color-black;
-	width: $traffic-light-width;
-	padding: $default-space;
+.error-message{
+	background-color: $red-color;
+	color: $error-font-color;
+	padding: $default-spacing;
+	border: 1px solid $error-font-color;
+	margin: $default-spacing;
+	border-radius: $default-radius; 
+}
+
+.input-box{
+	transition: 1s;
+	width: 300px;
+	min-height: 200px;
+	border: 1px solid $border-color;
+	margin: 0 auto;
+	padding: $default-spacing;
+
+	.input-group{
+		margin: $default-spacing;
+		transition: 1s;
+	}
+	.todo {
+		margin: $default-spacing;
+	}
+	.delete-todo{
+		float: right;
+    cursor: pointer;
+    color: $red-color;
+    font-size: 20px;
+    font-weight: 800;
+	}
+
+	label{
+		display:block;
+	}
+
+	input[type="text"], textarea {
+		width: 100%;
+		font-size: 20px;
+		border-radius: $default-radius;
+		resize: none;
+		box-sizing: border-box;
+		padding: $min-padding;
+		margin: 0;
+		border: 1px solid $border-color;
+	}
+
+	.list-input {
+		input[type="text"] {
+			width: 200px;
+		}
+		input[type="submit"]{
+			width: 75px;
+			height: 33px;
+			margin: 0;
+			padding: 0;
+			background-color: white;
+			border: 1px #ccc solid;
+			border-radius: $default-radius;
+			float: right;
+			box-sizing: border-box;
+		}
+	}
+	.save-note-button{
+		height: 33px;
+		margin: 0;
+		padding: $default-spacing;
+		background-color: white;
+		border: 1px #ccc solid;
+		border-radius: $default-radius;
+		float: right;
+		box-sizing: border-box;
+	}
+}
+
+ul {
+	padding-left: $default-spacing/2;
+}
+
+.show-notes{
+	margin: $default-spacing 0;
+	.show-times{
+		font-size: 9px;
+	}
+	.display-note{
+		min-width: 150px;
+		min-height: 150px;
+		float: left;
+		margin: $default-spacing/2;
+		padding: $default-spacing;
+		box-shadow: 1px 1px 8px #888888;
+		border-radius: $default-radius;
+
+		.done-todo{
+			text-decoration: line-through;
+		}
+
+		.toggle-todo{
+			float: right;
+	    cursor: pointer;
+	    font-size: 20px;
+	    font-weight: 800;
+	    margin: $default-spacing/4 0;
+		}
+
+		.todo-done{
+			color:$red-color;
+		}
+
+		.todo-undone{
+			color: green;
+		}
+
+		.todo{
+			
+			input[type=text]{
+				display: inline;
+				margin-right: 0;
+				width: 175px;	
+				margin: $default-spacing/4 0;
+			}
+			
+		}
+	}
+	input[type=text]{
+		display: block;
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    margin: $default-spacing 0;
+    box-sizing:border-box;
+    border-bottom: 1px solid transparent;
+	}
+	textarea{
+		margin: 0px;
+    min-height: 50px;
+    width: 200px;
+    background: transparent;
+    border: none;
+    resize: none;
+	}
+	input[type=text]:focus{
+  	border-bottom: 1px solid #333;
+	}
+}
+
+.radios-hidden{
+	visibility:hidden;
+}
+
+.radios-hidden:hover{
+	visibility:visible;
+}
+
+.color-radios{
+	div {
+		display: inline-block;
+	}
+	input[type="radio"] {
+  	display:none;
+	}
+	input[type="radio"] + label {
+    font-family:Arial, sans-serif;
+    font-size:14px;
+	}
+	input[type="radio"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-1px 4px 0 0;
+    vertical-align:middle;
+    cursor:pointer;
+    -moz-border-radius:  50%;
+    border-radius:  50%;
+   	opacity: 0.5;
+   	transition: 1s;
+   	border:2px solid #333;
+	}
+
+	input[type="radio"]:checked + label span{
+	  opacity: 1;
+	}
+
+	input[type="radio"] + label span,
+	input[type="radio"]:checked + label span {
+	  -webkit-transition:background-color 0.4s linear;
+	  -o-transition:background-color 0.4s linear;
+	  -moz-transition:background-color 0.4s linear;
+	  transition:background-color 0.4s linear;
+	}
 }

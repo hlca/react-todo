@@ -1,53 +1,76 @@
-import expect from 'expect';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
+import { Provider, connect } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import "../css/styles.scss";
+import undoable, { distinctState } from 'redux-undo';
 
-const Bulb = ({ color }) => (
-  <div class={ color + " light" }></div>
-);
+import notes from './reducers/notes';
+import newNote from './reducers/newNote';
+import visibilityFilter from './reducers/visibilityFilter';
+import textFilter from './reducers/textFilter';
 
-const TrafficLight = ({on}) => (
+import Undo from './components/Undo.js';
+
+import { AddNote } from './components/AddNote.js';
+import { Filters } from './components/Filters.js';
+import { DisplayNotes } from './components/DisplayNotes.js';
+
+import '../css/styles.scss';
+
+var stateHistory = [];
+
+const loadState = () => {
+  try{
+    let result = JSON.parse(localStorage.getItem('state'));
+    return result ? {past:[], present:result, future:[]} : undefined;
+  }
+  catch(err){
+    return undefined;
+  }
+}
+
+const saveState = (state) => {
+  try{
+    localStorage.setItem('state', JSON.stringify(state.present));
+  }
+  catch(err){
+    // Log
+  }
+}
+
+
+const notesApp = combineReducers({
+  notes,
+  newNote, 
+  visibilityFilter,
+  textFilter
+});
+
+let store = createStore(undoable(notesApp), loadState());
+
+const NotesApp = ({ todos }) => (
   <div>
-    <div class="traffic-light">
-      <Bulb color={(on === 0 ? "active red" : "red")}></Bulb>  
-      <Bulb color={(on === 1 ? "active yellow" : "yellow")}></Bulb>  
-      <Bulb color={(on === 2 ? "active green" : "green")}></Bulb>  
-    </div>
-    <button onClick={ () => store.dispatch({type : "CHANGE_LIGHT"}) }>Change light</button>
+    <AddNote />
+    <DisplayNotes />
+
+    <Undo />
+    <Filters />
   </div>
 );
 
 const render = () => {
   ReactDOM.render(
-    <TrafficLight on = { store.getState() }/>,
+    <Provider store = { store }>
+      <NotesApp />
+    </Provider>,
     document.getElementById('root')
-  )
+  );
 }
 
-//My Reducer
-const trafficLight = (state = 0, action) => {
-  switch(action.type){
-    case "CHANGE_LIGHT":
-      switch(state){
-        case 0:
-          return 1;
-        case 1:
-          return 2;
-        case 2:
-          return 0;
-        default:
-          return 0;
-      }
-    default:
-      return state;
-  }
-
-}
-//createStore: reducer -> store
-const store = createStore(trafficLight);
-
-store.subscribe(render);
 render();
+
+
+store.subscribe(() => {
+  saveState(store.getState());
+});
